@@ -1,223 +1,437 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Goon Simulator v1</title>
-  <style>
-    body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      text-align: center;
-      background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
-      padding: 2rem;
-      color: #2d2d2d;
-      user-select: none;
-    }
-    h1 {
-      color: #ff4081;
-      text-shadow: 2px 2px #fff;
-    }
-    #icecream {
-      font-size: 5rem;
-      margin: 1rem 0;
-      min-height: 5.5rem;
-    }
-    button {
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 10px;
-      background-color: #ffb347;
-      color: #fff;
-      cursor: pointer;
-      margin: 0.7rem 1rem;
-      transition: transform 0.1s, background-color 0.3s;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-    }
-    button:hover {
-      transform: scale(1.1);
-      background-color: #ff922b;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-    }
-    #soldList {
-      margin-top: 2rem;
-      font-size: 1.1rem;
-      max-height: 150px;
-      overflow-y: auto;
-      border: 1px solid #fcb69f;
-      background: #fff8f0;
-      border-radius: 10px;
-      padding: 0.5rem;
-      text-align: left;
-      width: 300px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    #message {
-      font-size: 1.5rem;
-      color: #6a1b9a;
-      margin-top: 1rem;
-      font-weight: bold;
-      min-height: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    #moneyDisplay {
-      font-size: 1.5rem;
-      color: green;
-      font-weight: bold;
-      margin-top: 1rem;
-    }
-    #rebirthCostDisplay {
-      font-size: 1.2rem;
-      color: #b03a7a;
-      margin-top: 0.3rem;
-      font-weight: 600;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Goon Simulator v2</title>
+<style>
+  body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    text-align: center;
+    background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
+    padding: 2rem;
+    color: #2d2d2d;
+    user-select: none;
+  }
+  h1 {
+    color: #ff4081;
+    text-shadow: 2px 2px #fff;
+  }
+  #icecream {
+    font-size: 5rem;
+    margin: 1rem 0;
+    min-height: 5.5rem;
+  }
+  button {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #ffb347;
+    color: #fff;
+    cursor: pointer;
+    margin: 0.7rem 1rem;
+    transition: transform 0.1s, background-color 0.3s;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  }
+  button:hover {
+    transform: scale(1.1);
+    background-color: #ff922b;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  }
+  #soldList {
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #fcb69f;
+    background: #fff8f0;
+    border-radius: 10px;
+    padding: 0.5rem;
+    text-align: left;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #message {
+    font-size: 1.5rem;
+    color: #6a1b9a;
+    margin-top: 1rem;
+    font-weight: bold;
+    min-height: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  #moneyDisplay {
+    font-size: 1.5rem;
+    color: green;
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+  #rebirthCostDisplay {
+    font-size: 1.2rem;
+    color: #b03a7a;
+    margin-top: 0.3rem;
+    font-weight: 600;
+  }
+  #leaderboard {
+    margin: 2rem auto;
+    width: 300px;
+    text-align: left;
+    border: 1px solid #fcb69f;
+    background: #fff8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 1.1rem;
+  }
+  #perks {
+    margin-top: 1rem;
+  }
+  .skin-button {
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    border: 2px solid #ff4081;
+    cursor: pointer;
+    background: white;
+    color: #ff4081;
+    font-weight: bold;
+  }
+  .skin-button.active {
+    background: #ff4081;
+    color: white;
+  }
+  #usernamePrompt input {
+    font-size: 1.2rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid #ff4081;
+    margin-right: 0.5rem;
+  }
+</style>
 </head>
 <body>
-  <h1>Goon Simulator v1 🍦</h1>
-  <p>Made by Rayhan Tchaifa</p>
+<h1>Goon Simulator v2 🍦</h1>
+<p>Made by Rayhan Tchaifa</p>
 
-  <div id="usernamePrompt">
-    <label for="username">What's your name, Gooner? </label>
-    <input type="text" id="username" placeholder="Type your name" />
-    <button onclick="startGooning()">Start Gooning</button>
+<div id="usernamePrompt">
+  <label for="username">What's your name, Gooner? </label>
+  <input type="text" id="username" placeholder="Type your name" />
+  <button onclick="startGooning()">Start Gooning</button>
+</div>
+
+<div id="gameArea" style="display:none">
+  <div id="icecream">🍦</div>
+  <div id="moneyDisplay">Money: $0.00</div>
+  <button id="goonBtn" onclick="giveIceCream()">Goon</button>
+  <button onclick="sellIceCream()">Sell</button>
+  <button onclick="buyUpgrade()">Buy Upgrade 🍨 (<span id="upgradeCost">20</span>$)</button>
+  <button onclick="rebirth()">Rebirth 💫 (<span id="rebirthCost">200</span>$)</button>
+  <div id="rebirthCostDisplay"></div>
+
+  <div id="perks">
+    <h3>Perks</h3>
+    <button onclick="buyPerk('autoSell')" id="perkAutoSell">Auto Sell ($100) - OFF</button>
+    <button onclick="buyPerk('doubleMoney')" id="perkDoubleMoney">Double Money ($150) - OFF</button>
   </div>
 
-  <div id="gameArea" style="display:none">
-    <div id="icecream">🍦</div>
-    <div id="moneyDisplay">Money: $0.00</div>
-    <button onclick="giveIceCream()">Goon</button>
-    <button onclick="sellIceCream()">Sell</button>
-    <button onclick="buyUpgrade()">Buy Upgrade 🍨 (<span id="upgradeCost">20</span>$)</button>
-    <button onclick="rebirth()">Rebirth 💫 (<span id="rebirthCost">200</span>$)</button>
-    <div id="rebirthCostDisplay"></div>
-    <div id="message"></div>
-    <div id="soldList"></div>
+  <div>
+    <h3>Skins</h3>
+    <button class="skin-button active" onclick="changeSkin('default')">Default 🍦</button>
+    <button class="skin-button" onclick="changeSkin('icecream')">Ice Cream 🍨</button>
+    <button class="skin-button" onclick="changeSkin('shaved')">Shaved Ice 🍧</button>
   </div>
 
-  <audio id="goonSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
-  <audio id="sellSound" src="https://www.soundjay.com/button/beep-10.wav"></audio>
+  <div id="message"></div>
+  <div id="soldList"></div>
+  <div id="leaderboard">
+    <h3>Leaderboard (Local)</h3>
+    <ol id="leaderboardList"></ol>
+  </div>
+</div>
 
-  <script>
-    let iceCreams = 0;
-    let userName = "Gooner";
-    let coneLevel = 1;
-    let money = 0;
+<script>
+  let iceCreams = 0;
+  let userName = "Gooner";
+  let coneLevel = 1;
+  let money = 0;
 
-    // Upgrade and rebirth costs
-    let upgradeCost = 20;
-    let rebirthCost = 200;
+  let upgradeCost = 20;
+  let rebirthCost = 200;
+  let rebirthMultiplier = 1;
 
-    // Rebirth multiplier for money earnings after rebirth
-    let rebirthMultiplier = 1;
+  let perks = {
+    autoSell: false,
+    doubleMoney: false
+  };
 
-    const funnyMessages = [
-      "I need to GOON! 🖐️",
-      "More cones! The people are hungry!",
-      "Use the HAND! 🍦✋",
-      "Goon harder, NAME!",
-      "You call that gooning, NAME?",
-      "Goon power activated, NAME! 💪🍦",
-      "Cone-a-licious moment, NAME!",
-      "We sell ice cream, not dreams, NAME!",
-      "Double scoop goonage, NAME!",
-      "This is the GOON ERA, NAME!"
-    ];
+  let skin = 'default';
 
-    function startGooning() {
-      const input = document.getElementById("username").value.trim();
-      if (input) userName = input;
-      document.getElementById("usernamePrompt").style.display = "none";
-      document.getElementById("gameArea").style.display = "block";
+  const funnyMessages = [
+    "I need to GOON! 🖐️",
+    "More cones! The people are hungry!",
+    "Use the HAND! 🍦✋",
+    "Goon harder, NAME!",
+    "You call that gooning, NAME?",
+    "Goon power activated, NAME! 💪🍦",
+    "Cone-a-licious moment, NAME!",
+    "We sell ice cream, not dreams, NAME!",
+    "Double scoop goonage, NAME!",
+    "This is the GOON ERA, NAME!"
+  ];
+
+  // Save/load game data from localStorage
+  function saveGame() {
+    const data = {
+      userName,
+      iceCreams,
+      coneLevel,
+      money,
+      upgradeCost,
+      rebirthCost,
+      rebirthMultiplier,
+      perks,
+      skin
+    };
+    localStorage.setItem('goonSimSave', JSON.stringify(data));
+    saveLeaderboard();
+  }
+
+  function loadGame() {
+    const data = JSON.parse(localStorage.getItem('goonSimSave'));
+    if (data) {
+      userName = data.userName || "Gooner";
+      iceCreams = data.iceCreams || 0;
+      coneLevel = data.coneLevel || 1;
+      money = data.money || 0;
+      upgradeCost = data.upgradeCost || 20;
+      rebirthCost = data.rebirthCost || 200;
+      rebirthMultiplier = data.rebirthMultiplier || 1;
+      perks = data.perks || { autoSell: false, doubleMoney: false };
+      skin = data.skin || 'default';
+      return true;
+    }
+    return false;
+  }
+
+  // Leaderboard stored locally, sorted by money
+  function saveLeaderboard() {
+    let lb = JSON.parse(localStorage.getItem('goonLeaderboard')) || [];
+    // Update or add current user
+    const index = lb.findIndex(e => e.name === userName);
+    if (index >= 0) {
+      if (lb[index].money < money) lb[index].money = money;
+    } else {
+      lb.push({name: userName, money});
+    }
+    // Sort descending by money, keep top 10
+    lb.sort((a,b) => b.money - a.money);
+    if (lb.length > 10) lb = lb.slice(0, 10);
+    localStorage.setItem('goonLeaderboard', JSON.stringify(lb));
+  }
+
+  function updateLeaderboard() {
+    const lb = JSON.parse(localStorage.getItem('goonLeaderboard')) || [];
+    const list = document.getElementById('leaderboardList');
+    list.innerHTML = '';
+    for (const entry of lb) {
+      const li = document.createElement('li');
+      li.textContent = `${entry.name}: $${entry.money.toFixed(2)}`;
+      list.appendChild(li);
+    }
+  }
+
+  function startGooning() {
+    const input = document.getElementById("username").value.trim();
+    if (input) userName = input;
+    document.getElementById("usernamePrompt").style.display = "none";
+    document.getElementById("gameArea").style.display = "block";
+
+    if (!loadGame() || userName !== input) {
+      resetGame();
+      saveGame();
+    }
+
+    updateUI();
+    showFunnyMessage();
+    startAutoSellIfEnabled();
+  }
+
+  function resetGame() {
+    iceCreams = 0;
+    coneLevel = 1;
+    money = 0;
+    upgradeCost = 20;
+    rebirthCost = 200;
+    rebirthMultiplier = 1;
+    perks = { autoSell: false, doubleMoney: false };
+    skin = 'default';
+  }
+
+  function updateUI() {
+    updateIceCreamDisplay();
+    updateMoneyDisplay();
+    updateUpgradeCost();
+    updateRebirthCost();
+    updatePerksUI();
+    updateSkinsUI();
+    showFunnyMessage();
+    updateLeaderboard();
+  }
+
+  function updateIceCreamDisplay() {
+    const icecreamDiv = document.getElementById('icecream');
+    if (iceCreams > 10) {
+      icecreamDiv.textContent = `${getSkinEmoji()} x ${iceCreams}`;
+    } else {
+      icecreamDiv.textContent = getSkinEmoji().repeat(iceCreams || 1);
+    }
+  }
+
+  function getSkinEmoji() {
+    switch (skin) {
+      case 'icecream': return '🍨';
+      case 'shaved': return '🍧';
+      default: return '🍦';
+    }
+  }
+
+  function giveIceCream() {
+    iceCreams++;
+    updateIceCreamDisplay();
+    showFunnyMessage();
+    saveGame();
+  }
+
+  function sellIceCream() {
+    if (iceCreams > 0) {
+      let earnings = coneLevel * 1 * rebirthMultiplier;
+      if (perks.doubleMoney) earnings *= 2;
+      money += earnings;
+      addSoldLog(`Sold one ${getSkinEmoji()} for $${earnings.toFixed(2)}! Cha-ching! 💰`);
+      iceCreams--;
+      updateIceCreamDisplay();
       updateMoneyDisplay();
-      updateCostsDisplay();
       showFunnyMessage();
+      saveGame();
+      updateLeaderboard();
+    } else {
+      alert("No ice cream to sell! Go Goon first!");
     }
+  }
 
-    function giveIceCream() {
-      iceCreams++;
-      document.getElementById("icecream").textContent = "🍦".repeat(iceCreams);
-      showFunnyMessage();
-      document.getElementById("goonSound").play();
+  function buyUpgrade() {
+    if (money >= upgradeCost) {
+      money -= upgradeCost;
+      coneLevel++;
+      upgradeCost = Math.ceil(upgradeCost * 1.5);
+      alert(`Upgrade bought, ${userName}! Cone level is now ${coneLevel}! Next upgrade costs $${upgradeCost}`);
+      updateMoneyDisplay();
+      updateUpgradeCost();
+      saveGame();
+    } else {
+      alert("Not enough money! Keep gooning!");
     }
+  }
 
-    function sellIceCream() {
-      if (iceCreams > 0) {
-        // Earnings scale with coneLevel and rebirthMultiplier
-        const earnings = coneLevel * 1 * rebirthMultiplier;
-        money += earnings;
-        const soldList = document.getElementById("soldList");
-        const cone = document.createElement("div");
-        cone.textContent = `Sold one ${coneEmoji()} for $${earnings.toFixed(2)}! Cha-ching! 💰`;
-        soldList.appendChild(cone);
-        iceCreams--;
-        document.getElementById("icecream").textContent = "🍦".repeat(iceCreams);
-        updateMoneyDisplay();
-        showFunnyMessage();
-        document.getElementById("sellSound").play();
-      } else {
-        alert("No ice cream to sell! Go Goon first!");
-      }
+  function rebirth() {
+    if (money >= rebirthCost) {
+      money -= rebirthCost;
+      iceCreams = 0;
+      coneLevel = 1;
+      rebirthMultiplier += 0.5;
+      rebirthCost = Math.ceil(rebirthCost * 1.7);
+      addSoldLog(`Rebirth complete, ${userName}! Multiplier is now x${rebirthMultiplier.toFixed(1)} 🌟`);
+      updateMoneyDisplay();
+      updateRebirthCost();
+      updateIceCreamDisplay();
+      saveGame();
+      updateLeaderboard();
+    } else {
+      alert("Not enough money for rebirth! Keep selling!");
     }
+  }
 
-    function buyUpgrade() {
-      if (money >= upgradeCost) {
-        money -= upgradeCost;
-        coneLevel++;
-        // Increase upgrade cost for next time (e.g. +10 each time)
-        upgradeCost = Math.floor(upgradeCost * 1.5);
-        alert(`Upgrade bought, ${userName}! Cone level is now ${coneLevel}!`);
-        updateMoneyDisplay();
-        updateCostsDisplay();
-      } else {
-        alert("Not enough money! Keep gooning!");
-      }
+  function updateMoneyDisplay() {
+    document.getElementById("moneyDisplay").textContent = `Money: $${money.toFixed(2)}`;
+  }
+
+  function updateUpgradeCost() {
+    document.getElementById("upgradeCost").textContent = upgradeCost;
+  }
+
+  function updateRebirthCost() {
+    document.getElementById("rebirthCost").textContent = rebirthCost;
+    document.getElementById("rebirthCostDisplay").textContent = `Rebirth multiplier: x${rebirthMultiplier.toFixed(1)}`;
+  }
+
+  function addSoldLog(text) {
+    const soldList = document.getElementById("soldList");
+    const cone = document.createElement("div");
+    cone.textContent = text;
+    soldList.prepend(cone);
+    if (soldList.children.length > 10) {
+      soldList.removeChild(soldList.lastChild);
     }
+  }
 
-    function rebirth() {
-      if (money >= rebirthCost) {
-        money -= rebirthCost;
-        coneLevel = 1;
-        iceCreams = 0;
-        document.getElementById("icecream").textContent = "🍦";
-        document.getElementById("soldList").innerHTML = "";
-        // Increase rebirth cost by 50% each time
-        rebirthCost = Math.floor(rebirthCost * 1.5);
-        // Increase multiplier for earnings after rebirth
-        rebirthMultiplier += 0.5;
-
-        alert(`Rebirth complete, ${userName}! You’re now a legendary gooner! 🌟 Your earnings multiplier is now x${rebirthMultiplier.toFixed(1)}!`);
-        updateMoneyDisplay();
-        updateCostsDisplay();
-      } else {
-        alert("Not enough money for rebirth! Keep selling!");
-      }
+  // Perks
+  function buyPerk(perkName) {
+    if (perks[perkName]) {
+      alert(`Perk ${perkName} already bought!`);
+      return;
     }
+    let cost = 0;
+    if (perkName === 'autoSell') cost = 100;
+    else if (perkName === 'doubleMoney') cost = 150;
+    else return;
 
-    function updateMoneyDisplay() {
-      document.getElementById("moneyDisplay").textContent = `Money: $${money.toFixed(2)}`;
-    }
+    if (money >= cost) {
+      money -= cost;
+      perks[perkName] = true;
+      updatePerksUI();
+      alert(`Perk ${perkName} bought!`);
+      saveGame();
+      if (perkName === 'autoSell') startAutoSellIfEnabled();
+      updateMoneyDisplay();
+    } else {
+      alert("Not enough money for
+his perk!");
+}
+}
 
-    function updateCostsDisplay() {
-      document.getElementById("upgradeCost").textContent = upgradeCost;
-      document.getElementById("rebirthCost").textContent = rebirthCost;
-      document.getElementById("rebirthCostDisplay").textContent = `Current rebirth cost: $${rebirthCost}`;
-    }
+function updatePerksUI() {
+document.getElementById('perkAutoSell').textContent = Auto Sell ($100) - ${perks.autoSell ? "ON" : "OFF"};
+document.getElementById('perkDoubleMoney').textContent = Double Money ($150) - ${perks.doubleMoney ? "ON" : "OFF"};
+}
 
-    function coneEmoji() {
-      if (coneLevel >= 5) return "🍧";
-      if (coneLevel >= 3) return "🍨";
-      return "🍦";
-    }
+// Auto sell implementation
+let autoSellInterval = null;
+function startAutoSellIfEnabled() {
+if (perks.autoSell && !autoSellInterval) {
+autoSellInterval = setInterval(() => {
+if (iceCreams > 0) sellIceCream();
+}, 2000);
+} else if (!perks.autoSell && autoSellInterval) {
+clearInterval(autoSellInterval);
+autoSellInterval = null;
+}
+}
 
-    function showFunnyMessage() {
-      const message = document.getElementById("message");
-      const random = Math.floor(Math.random() * funnyMessages.length);
-      const msg = funnyMessages[random].replaceAll("NAME", userName);
-      message.textContent = msg;
-    }
-  </script>
-</body>
-</html>
+// Skins
+function changeSkin(newSkin) {
+skin = newSkin;
+updateIceCreamDisplay();
+updateSkinsUI();
+saveGame();
+}
+
+function updateSkinsUI() {
+document.querySelectorAll('.skin-button').forEach(btn => {
+btn.classList.remove('active');
+});
+const btn = document.querySelector(.skin-button[onclick="changeSkin('${skin}')"]);
+if (btn) btn.classList.add('active');
+}
+</script>
+
+</body> </html> ```

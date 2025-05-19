@@ -6,13 +6,15 @@
   <title>Goon Simulator v1</title>
   <style>
     body {
-      font-family: Comic Sans MS, cursive, sans-serif;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
-      background: #f9f3db;
+      background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
       padding: 2rem;
+      color: #2d2d2d;
     }
     h1 {
       color: #ff4081;
+      text-shadow: 2px 2px #fff;
     }
     #icecream {
       font-size: 5rem;
@@ -20,25 +22,34 @@
     }
     button {
       padding: 1rem 2rem;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       border: none;
       border-radius: 10px;
-      background-color: #ffcc00;
+      background-color: #ffb347;
+      color: #fff;
       cursor: pointer;
       margin: 1rem;
-      transition: transform 0.1s;
+      transition: transform 0.1s, background-color 0.3s;
     }
     button:hover {
       transform: scale(1.1);
+      background-color: #ff922b;
     }
     #soldList {
       margin-top: 2rem;
       font-size: 1.2rem;
+      max-height: 200px;
+      overflow-y: auto;
     }
     #message {
       font-size: 1.5rem;
-      color: #673ab7;
+      color: #6a1b9a;
       margin-top: 1rem;
+      font-weight: bold;
+    }
+    #moneyDisplay {
+      font-size: 1.5rem;
+      color: green;
       font-weight: bold;
     }
   </style>
@@ -55,9 +66,11 @@
 
   <div id="gameArea" style="display:none">
     <div id="icecream">🍦</div>
+    <div id="moneyDisplay">Money: $0.00</div>
     <button onclick="giveIceCream()">Goon</button>
     <button onclick="sellIceCream()">Sell</button>
-    <button onclick="upgradeCone()">Upgrade Cone 🍨</button>
+    <button onclick="buyUpgrade()">Buy Upgrade 🍨 ($20)</button>
+    <button onclick="rebirth()">Rebirth 💫 ($200)</button>
     <div id="message"></div>
     <div id="soldList"></div>
   </div>
@@ -69,6 +82,7 @@
     let iceCreams = 0;
     let userName = "Gooner";
     let coneLevel = 1;
+    let money = 0;
 
     const funnyMessages = [
       "I need to GOON! 🖐️",
@@ -89,6 +103,7 @@
       document.getElementById("usernamePrompt").style.display = "none";
       document.getElementById("gameArea").style.display = "block";
       showFunnyMessage();
+      updateMoneyDisplay();
     }
 
     function giveIceCream() {
@@ -100,12 +115,15 @@
 
     function sellIceCream() {
       if (iceCreams > 0) {
+        const earnings = coneLevel * 1;
+        money += earnings;
         const soldList = document.getElementById("soldList");
         const cone = document.createElement("div");
-        cone.textContent = `Sold one ${coneEmoji()} for $${(coneLevel * 1).toFixed(2)}! Cha-ching! 💰`;
+        cone.textContent = `Sold one ${coneEmoji()} for $${earnings.toFixed(2)}! Cha-ching! 💰`;
         soldList.appendChild(cone);
         iceCreams--;
         document.getElementById("icecream").textContent = "🍦".repeat(iceCreams);
+        updateMoneyDisplay();
         showFunnyMessage();
         document.getElementById("sellSound").play();
       } else {
@@ -113,9 +131,33 @@
       }
     }
 
-    function upgradeCone() {
-      coneLevel++;
-      alert(`Nice upgrade, ${userName}! Your cones are now level ${coneLevel}!`);
+    function buyUpgrade() {
+      if (money >= 20) {
+        money -= 20;
+        coneLevel++;
+        alert(`Upgrade bought, ${userName}! Cone level is now ${coneLevel}!`);
+        updateMoneyDisplay();
+      } else {
+        alert("Not enough money! Keep gooning!");
+      }
+    }
+
+    function rebirth() {
+      if (money >= 200) {
+        coneLevel = 1;
+        money = 0;
+        iceCreams = 0;
+        document.getElementById("icecream").textContent = "🍦";
+        document.getElementById("soldList").innerHTML = "";
+        alert(`Rebirth complete, ${userName}! You’re now a legendary gooner! 🌟`);
+        updateMoneyDisplay();
+      } else {
+        alert("Not enough money for rebirth! Keep selling!");
+      }
+    }
+
+    function updateMoneyDisplay() {
+      document.getElementById("moneyDisplay").textContent = `Money: $${money.toFixed(2)}`;
     }
 
     function coneEmoji() {

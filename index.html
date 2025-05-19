@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goon Simulator v1</title>
+  <style>
+    body {
+      font-family: Comic Sans MS, cursive, sans-serif;
+      text-align: center;
+      background: #f9f3db;
+      padding: 2rem;
+    }
+    h1 {
+      color: #ff4081;
+    }
+    #icecream {
+      font-size: 5rem;
+      margin: 1rem 0;
+    }
+    button {
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #ffcc00;
+      cursor: pointer;
+      margin: 1rem;
+      transition: transform 0.1s;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    #soldList {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+    }
+    #message {
+      font-size: 1.5rem;
+      color: #673ab7;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Goon Simulator v1 🍦</h1>
+  <p>Made by Rayhan Tchaifa</p>
+
+  <div id="usernamePrompt">
+    <label for="username">What's your name, Gooner? </label>
+    <input type="text" id="username" placeholder="Type your name" />
+    <button onclick="startGooning()">Start Gooning</button>
+  </div>
+
+  <div id="gameArea" style="display:none">
+    <div id="icecream">🍦</div>
+    <button onclick="giveIceCream()">Goon</button>
+    <button onclick="sellIceCream()">Sell</button>
+    <button onclick="upgradeCone()">Upgrade Cone 🍨</button>
+    <div id="message"></div>
+    <div id="soldList"></div>
+  </div>
+
+  <audio id="goonSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+  <audio id="sellSound" src="https://www.soundjay.com/button/beep-10.wav"></audio>
+
+  <script>
+    let iceCreams = 0;
+    let userName = "Gooner";
+    let coneLevel = 1;
+
+    const funnyMessages = [
+      "I need to GOON! 🖐️",
+      "More cones! The people are hungry!",
+      "Use the HAND! 🍦✋",
+      "Goon harder, NAME!",
+      "You call that gooning, NAME?",
+      "Goon power activated, NAME! 💪🍦",
+      "Cone-a-licious moment, NAME!",
+      "We sell ice cream, not dreams, NAME!",
+      "Double scoop goonage, NAME!",
+      "This is the GOON ERA, NAME!"
+    ];
+
+    function startGooning() {
+      const input = document.getElementById("username").value.trim();
+      if (input) userName = input;
+      document.getElementById("usernamePrompt").style.display = "none";
+      document.getElementById("gameArea").style.display = "block";
+      showFunnyMessage();
+    }
+
+    function giveIceCream() {
+      iceCreams++;
+      document.getElementById("icecream").textContent = "🍦".repeat(iceCreams);
+      showFunnyMessage();
+      document.getElementById("goonSound").play();
+    }
+
+    function sellIceCream() {
+      if (iceCreams > 0) {
+        const soldList = document.getElementById("soldList");
+        const cone = document.createElement("div");
+        cone.textContent = `Sold one ${coneEmoji()} for $${(coneLevel * 1).toFixed(2)}! Cha-ching! 💰`;
+        soldList.appendChild(cone);
+        iceCreams--;
+        document.getElementById("icecream").textContent = "🍦".repeat(iceCreams);
+        showFunnyMessage();
+        document.getElementById("sellSound").play();
+      } else {
+        alert("No ice cream to sell! Go Goon first!");
+      }
+    }
+
+    function upgradeCone() {
+      coneLevel++;
+      alert(`Nice upgrade, ${userName}! Your cones are now level ${coneLevel}!`);
+    }
+
+    function coneEmoji() {
+      if (coneLevel >= 5) return "🍧";
+      if (coneLevel >= 3) return "🍨";
+      return "🍦";
+    }
+
+    function showFunnyMessage() {
+      const message = document.getElementById("message");
+      const random = Math.floor(Math.random() * funnyMessages.length);
+      const msg = funnyMessages[random].replaceAll("NAME", userName);
+      message.textContent = msg;
+    }
+  </script>
+</body>
+</html>

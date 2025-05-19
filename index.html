@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Goon Simulator v1</title>
   <style>
     body {
@@ -11,6 +11,7 @@
       background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
       padding: 2rem;
       color: #2d2d2d;
+      user-select: none;
     }
     h1 {
       color: #ff4081;
@@ -19,6 +20,7 @@
     #icecream {
       font-size: 5rem;
       margin: 1rem 0;
+      min-height: 5.5rem;
     }
     button {
       padding: 1rem 2rem;
@@ -28,29 +30,48 @@
       background-color: #ffb347;
       color: #fff;
       cursor: pointer;
-      margin: 1rem;
+      margin: 0.7rem 1rem;
       transition: transform 0.1s, background-color 0.3s;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
     }
     button:hover {
       transform: scale(1.1);
       background-color: #ff922b;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
     }
     #soldList {
       margin-top: 2rem;
-      font-size: 1.2rem;
-      max-height: 200px;
+      font-size: 1.1rem;
+      max-height: 150px;
       overflow-y: auto;
+      border: 1px solid #fcb69f;
+      background: #fff8f0;
+      border-radius: 10px;
+      padding: 0.5rem;
+      text-align: left;
+      width: 300px;
+      margin-left: auto;
+      margin-right: auto;
     }
     #message {
       font-size: 1.5rem;
       color: #6a1b9a;
       margin-top: 1rem;
       font-weight: bold;
+      min-height: 2.5rem;
+      margin-bottom: 0.5rem;
     }
     #moneyDisplay {
       font-size: 1.5rem;
       color: green;
       font-weight: bold;
+      margin-top: 1rem;
+    }
+    #rebirthCostDisplay {
+      font-size: 1.2rem;
+      color: #b03a7a;
+      margin-top: 0.3rem;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -69,8 +90,9 @@
     <div id="moneyDisplay">Money: $0.00</div>
     <button onclick="giveIceCream()">Goon</button>
     <button onclick="sellIceCream()">Sell</button>
-    <button onclick="buyUpgrade()">Buy Upgrade 🍨 ($20)</button>
-    <button onclick="rebirth()">Rebirth 💫 ($200)</button>
+    <button onclick="buyUpgrade()">Buy Upgrade 🍨 (<span id="upgradeCost">20</span>$)</button>
+    <button onclick="rebirth()">Rebirth 💫 (<span id="rebirthCost">200</span>$)</button>
+    <div id="rebirthCostDisplay"></div>
     <div id="message"></div>
     <div id="soldList"></div>
   </div>
@@ -83,6 +105,13 @@
     let userName = "Gooner";
     let coneLevel = 1;
     let money = 0;
+
+    // Upgrade and rebirth costs
+    let upgradeCost = 20;
+    let rebirthCost = 200;
+
+    // Rebirth multiplier for money earnings after rebirth
+    let rebirthMultiplier = 1;
 
     const funnyMessages = [
       "I need to GOON! 🖐️",
@@ -102,8 +131,9 @@
       if (input) userName = input;
       document.getElementById("usernamePrompt").style.display = "none";
       document.getElementById("gameArea").style.display = "block";
-      showFunnyMessage();
       updateMoneyDisplay();
+      updateCostsDisplay();
+      showFunnyMessage();
     }
 
     function giveIceCream() {
@@ -115,7 +145,8 @@
 
     function sellIceCream() {
       if (iceCreams > 0) {
-        const earnings = coneLevel * 1;
+        // Earnings scale with coneLevel and rebirthMultiplier
+        const earnings = coneLevel * 1 * rebirthMultiplier;
         money += earnings;
         const soldList = document.getElementById("soldList");
         const cone = document.createElement("div");
@@ -132,25 +163,34 @@
     }
 
     function buyUpgrade() {
-      if (money >= 20) {
-        money -= 20;
+      if (money >= upgradeCost) {
+        money -= upgradeCost;
         coneLevel++;
+        // Increase upgrade cost for next time (e.g. +10 each time)
+        upgradeCost = Math.floor(upgradeCost * 1.5);
         alert(`Upgrade bought, ${userName}! Cone level is now ${coneLevel}!`);
         updateMoneyDisplay();
+        updateCostsDisplay();
       } else {
         alert("Not enough money! Keep gooning!");
       }
     }
 
     function rebirth() {
-      if (money >= 200) {
+      if (money >= rebirthCost) {
+        money -= rebirthCost;
         coneLevel = 1;
-        money = 0;
         iceCreams = 0;
         document.getElementById("icecream").textContent = "🍦";
         document.getElementById("soldList").innerHTML = "";
-        alert(`Rebirth complete, ${userName}! You’re now a legendary gooner! 🌟`);
+        // Increase rebirth cost by 50% each time
+        rebirthCost = Math.floor(rebirthCost * 1.5);
+        // Increase multiplier for earnings after rebirth
+        rebirthMultiplier += 0.5;
+
+        alert(`Rebirth complete, ${userName}! You’re now a legendary gooner! 🌟 Your earnings multiplier is now x${rebirthMultiplier.toFixed(1)}!`);
         updateMoneyDisplay();
+        updateCostsDisplay();
       } else {
         alert("Not enough money for rebirth! Keep selling!");
       }
@@ -158,6 +198,12 @@
 
     function updateMoneyDisplay() {
       document.getElementById("moneyDisplay").textContent = `Money: $${money.toFixed(2)}`;
+    }
+
+    function updateCostsDisplay() {
+      document.getElementById("upgradeCost").textContent = upgradeCost;
+      document.getElementById("rebirthCost").textContent = rebirthCost;
+      document.getElementById("rebirthCostDisplay").textContent = `Current rebirth cost: $${rebirthCost}`;
     }
 
     function coneEmoji() {
